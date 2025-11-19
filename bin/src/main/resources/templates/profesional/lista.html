@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}"></head>
+<body>
+
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<div class="container" style="padding: 3rem 1.5rem;">
+    <div class="card fade-in">
+        <div class="card-header">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h2 class="card-title">PROFESIONALES</h2>
+                <a th:href="@{/profesionales/nuevo}" class="btn btn-primary">+ Nuevo Profesional</a>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div th:if="${mensaje}" th:class="'alert alert-' + ${tipoMensaje}" th:text="${mensaje}"></div>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Usuario</th>
+                        <th>Especialidad</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="profesional : ${profesionales}">
+                        <td th:text="${profesional.id}">1</td>
+                        <td th:text="${profesional.usuarioNombre}">Usuario</td>
+                        <td th:text="${profesional.especialidad}">Barbero</td>
+                        <td>
+                            <span th:if="${profesional.activo}" style="color: var(--color-success); font-weight: 600;">Activo</span>
+                            <span th:unless="${profesional.activo}" style="color: var(--color-danger); font-weight: 600;">Inactivo</span>
+                        </td>
+                        <td>
+                            <a th:href="@{/profesionales/editar/{id}(id=${profesional.id})}" class="btn btn-primary" style="padding: 0.5rem 1rem; margin-right: 0.5rem;">Editar</a>
+                            <a th:href="@{/profesionales/eliminar/{id}(id=${profesional.id})}" 
+                               class="btn btn-danger" 
+                               style="padding: 0.5rem 1rem;"
+                               onclick="return confirm('¿Estás seguro de eliminar este profesional?')">Eliminar</a>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(profesionales)}">
+                        <td colspan="5" class="text-center">No hay profesionales registrados</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+
+</body>
+</html>

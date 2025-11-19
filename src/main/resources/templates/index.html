@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: head}"></head>
+<body>
+
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<div class="hero">
+    <div class="hero-content fade-in">
+        <h1>BARBERÍA NEITA</h1>
+        <p>Sistema Profesional de Gestión de Citas</p>
+        <p sec:authentication="name" style="color: var(--color-accent); font-weight: 600;">
+            Bienvenido, <span th:text="${#authentication.name}"></span>
+        </p>
+    </div>
+</div>
+
+<div class="container" style="padding: 3rem 1.5rem;">
+    <!-- Estadísticas rápidas -->
+    <div class="grid grid-4 fade-in">
+        <div class="card text-center">
+            <h3 style="color: var(--color-info);">Citas</h3>
+            <p style="font-size: 2.5rem; font-weight: 700; color: var(--color-text);" 
+               th:text="${totalCitas != null ? totalCitas : '0'}">0</p>
+            <a th:href="@{/citas}" class="btn btn-primary">Ver Citas</a>
+        </div>
+        
+        <div class="card text-center">
+            <h3 style="color: var(--color-success);">Servicios</h3>
+            <p style="font-size: 2.5rem; font-weight: 700; color: var(--color-text);"
+               th:text="${totalServicios != null ? totalServicios : '0'}">0</p>
+            <a th:href="@{/servicios}" class="btn btn-primary">Ver Servicios</a>
+        </div>
+        
+        <div class="card text-center">
+            <h3 style="color: var(--color-warning);">Profesionales</h3>
+            <p style="font-size: 2.5rem; font-weight: 700; color: var(--color-text);"
+               th:text="${totalProfesionales != null ? totalProfesionales : '0'}">0</p>
+            <a th:href="@{/profesionales}" class="btn btn-primary">Ver Profesionales</a>
+        </div>
+        
+        <div class="card text-center">
+            <h3 style="color: var(--color-danger);">Usuarios</h3>
+            <p style="font-size: 2.5rem; font-weight: 700; color: var(--color-text);"
+               th:text="${totalUsuarios != null ? totalUsuarios : '0'}">0</p>
+            <a th:href="@{/usuarios}" class="btn btn-primary">Ver Usuarios</a>
+        </div>
+    </div>
+    
+    <!-- Accesos rápidos -->
+    <div class="card mt-3 fade-in">
+        <div class="card-header">
+            <h2 class="card-title">Accesos Rápidos</h2>
+        </div>
+        <div class="card-body">
+            <div class="grid grid-2">
+                <a th:href="@{/citas/nueva}" class="btn btn-primary" style="padding: 2rem;">
+                    <h4 style="margin: 0; color: var(--color-primary);">+ Nueva Cita</h4>
+                </a>
+                <a th:href="@{/servicios/nuevo}" class="btn btn-primary" style="padding: 2rem;">
+                    <h4 style="margin: 0; color: var(--color-primary);">+ Nuevo Servicio</h4>
+                </a>
+                <a th:href="@{/profesionales/nuevo}" class="btn btn-primary" style="padding: 2rem;">
+                    <h4 style="margin: 0; color: var(--color-primary);">+ Nuevo Profesional</h4>
+                </a>
+                <a th:href="@{/usuarios/nuevo}" class="btn btn-primary" style="padding: 2rem;">
+                    <h4 style="margin: 0; color: var(--color-primary);">+ Nuevo Usuario</h4>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+
+</body>
+</html>

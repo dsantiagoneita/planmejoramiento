@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}"></head>
+<body>
+
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<div class="container" style="padding: 3rem 1.5rem;">
+    <div class="card fade-in">
+        <div class="card-header">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h2 class="card-title">USUARIOS</h2>
+                <a th:href="@{/usuarios/nuevo}" class="btn btn-primary">+ Nuevo Usuario</a>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <!-- Mensajes -->
+            <div th:if="${mensaje}" th:class="'alert alert-' + ${tipoMensaje}" th:text="${mensaje}"></div>
+
+            <!-- Tabla de usuarios -->
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Email</th>
+                        <th>Teléfono</th>
+                        <th>Rol</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="usuario : ${usuarios}">
+                        <td th:text="${usuario.id}">1</td>
+                        <td th:text="${usuario.nombre}">Nombre</td>
+                        <td th:text="${usuario.email}">email@example.com</td>
+                        <td th:text="${usuario.telefono}">3001234567</td>
+                        <td th:text="${usuario.rol}">SUPER_ADMIN</td>
+                        <td>
+                            <span th:if="${usuario.activo}" style="color: var(--color-success); font-weight: 600;">Activo</span>
+                            <span th:unless="${usuario.activo}" style="color: var(--color-danger); font-weight: 600;">Inactivo</span>
+                        </td>
+                        <td>
+                            <a th:href="@{/usuarios/detalle/{id}(id=${usuario.id})}" class="btn btn-secondary" style="padding: 0.5rem 1rem; margin-right: 0.5rem;">Ver</a>
+                            <a th:href="@{/usuarios/editar/{id}(id=${usuario.id})}" class="btn btn-primary" style="padding: 0.5rem 1rem; margin-right: 0.5rem;">Editar</a>
+                            <a th:href="@{/usuarios/eliminar/{id}(id=${usuario.id})}" 
+                               class="btn btn-danger" 
+                               style="padding: 0.5rem 1rem;"
+                               onclick="return confirm('¿Estás seguro de eliminar este usuario?')">Eliminar</a>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(usuarios)}">
+                        <td colspan="7" class="text-center">No hay usuarios registrados</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+
+</body>
+</html>

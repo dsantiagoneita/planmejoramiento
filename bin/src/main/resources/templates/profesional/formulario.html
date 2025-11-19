@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}"></head>
+<body>
+
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<div class="container" style="padding: 3rem 1.5rem;">
+    <div class="card fade-in" style="max-width: 800px; margin: 0 auto;">
+        <div class="card-header">
+            <h2 class="card-title" th:text="${esNuevo ? 'NUEVO PROFESIONAL' : 'EDITAR PROFESIONAL'}">Formulario Profesional</h2>
+        </div>
+
+        <div class="card-body">
+            <form th:action="@{/profesionales/guardar}" th:object="${profesional}" method="post">
+                <input type="hidden" name="id" th:value="${profesional.id}">
+
+                <div class="form-group" th:if="${esNuevo}">
+                    <label for="usuarioId" class="form-label">Usuario *</label>
+                    <select id="usuarioId" th:field="*{usuarioId}" class="form-control" required>
+                        <option value="">Seleccione un usuario</option>
+                        <option th:each="usuario : ${usuarios}" 
+                                th:value="${usuario.id}" 
+                                th:text="${usuario.nombre + ' (' + usuario.email + ')'}">Usuario</option>
+                    </select>
+                    <span th:if="${#fields.hasErrors('usuarioId')}" th:errors="*{usuarioId}" style="color: var(--color-danger); font-size: 0.9rem;"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="especialidad" class="form-label">Especialidad *</label>
+                    <input type="text" id="especialidad" th:field="*{especialidad}" class="form-control" placeholder="Ej: Barbero, Estilista" required>
+                    <span th:if="${#fields.hasErrors('especialidad')}" th:errors="*{especialidad}" style="color: var(--color-danger); font-size: 0.9rem;"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="horarioDisponible" class="form-label">Horario Disponible</label>
+                    <input type="datetime-local" id="horarioDisponible" th:field="*{horarioDisponible}" class="form-control">
+                    <span th:if="${#fields.hasErrors('horarioDisponible')}" th:errors="*{horarioDisponible}" style="color: var(--color-danger); font-size: 0.9rem;"></span>
+                </div>
+
+                <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">Guardar</button>
+                    <a th:href="@{/profesionales}" class="btn btn-secondary" style="flex: 1;">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+
+</body>
+</html>

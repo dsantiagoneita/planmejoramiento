@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}"></head>
+<body>
+
+<div class="hero">
+    <div class="hero-content">
+        <h1 class="fade-in">BARBERÍA NEITA</h1>
+        <p class="fade-in">Sistema de Gestión de Citas</p>
+        
+        <div class="card" style="max-width: 500px; margin: 2rem auto;">
+            <div class="card-header">
+                <h3 class="card-title text-center">Iniciar Sesión</h3>
+            </div>
+            
+            <div class="card-body">
+                <!-- Mensaje de error -->
+                <div th:if="${param.error}" class="alert alert-danger">
+                    <strong>Error:</strong> Email o contraseña incorrectos.
+                </div>
+                
+                <!-- Mensaje de logout -->
+                <div th:if="${param.logout}" class="alert alert-success">
+                    <strong>Sesión cerrada:</strong> Has cerrado sesión exitosamente.
+                </div>
+                
+                <!-- Mensaje de sesión expirada -->
+                <div th:if="${param.expired}" class="alert alert-warning">
+                    <strong>Sesión expirada:</strong> Tu sesión ha expirado. Por favor, inicia sesión nuevamente.
+                </div>
+                
+                <!-- Formulario de login -->
+                <form th:action="@{/login}" method="post">
+                    <div class="form-group">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" 
+                               id="email" 
+                               name="email" 
+                               class="form-control" 
+                               placeholder="tu@email.com"
+                               required 
+                               autofocus>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password" class="form-label">Contraseña</label>
+                        <input type="password" 
+                               id="password" 
+                               name="password" 
+                               class="form-control" 
+                               placeholder="••••••••"
+                               required>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
+                        Ingresar
+                    </button>
+                </form>
+                
+                <!-- Información de usuario por defecto -->
+                <div class="alert alert-info" style="margin-top: 2rem;">
+                    <strong>Usuario por defecto:</strong><br>
+                    Email: admin@barberia.com<br>
+                    Contraseña: admin123
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/layout :: scripts}"></div>
+
+</body>
+</html>

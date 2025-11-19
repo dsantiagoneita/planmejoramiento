@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:fragment="head">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title} + ' - Barbería Neita'">Barbería Neita</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+
+<!-- Navegación -->
+<nav th:fragment="navbar" class="navbar">
+    <div class="container navbar-content">
+        <a th:href="@{/}" class="navbar-brand">BARBERÍA NEITA</a>
+        <ul class="navbar-menu">
+            <li><a th:href="@{/}" th:classappend="${#strings.equals(activeMenu, 'home')} ? 'active'">Inicio</a></li>
+            <li><a th:href="@{/citas}" th:classappend="${#strings.equals(activeMenu, 'citas')} ? 'active'">Citas</a></li>
+            <li><a th:href="@{/servicios}" th:classappend="${#strings.equals(activeMenu, 'servicios')} ? 'active'">Servicios</a></li>
+            <li><a th:href="@{/profesionales}" th:classappend="${#strings.equals(activeMenu, 'profesionales')} ? 'active'">Profesionales</a></li>
+            <li><a th:href="@{/usuarios}" th:classappend="${#strings.equals(activeMenu, 'usuarios')} ? 'active'">Usuarios</a></li>
+            <li sec:authorize="isAuthenticated()">
+                <a th:href="@{/logout}" class="btn btn-secondary">Cerrar Sesión</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<!-- Footer -->
+<footer th:fragment="footer" class="footer">
+    <div class="container">
+        <p>&copy; 2025 Barbería Neita. Sistema de Gestión de Citas. Todos los derechos reservados.</p>
+    </div>
+</footer>
+
+<!-- Scripts -->
+<div th:fragment="scripts">
+    <script th:src="@{/js/main.js}"></script>
+</div>
+
+</body>
+</html>

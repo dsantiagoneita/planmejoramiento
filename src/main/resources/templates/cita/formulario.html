@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}"></head>
+<body>
+
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<div class="container" style="padding: 3rem 1.5rem;">
+    <div class="card fade-in" style="max-width: 800px; margin: 0 auto;">
+        <div class="card-header">
+            <h2 class="card-title" th:text="${esNuevo ? 'NUEVA CITA' : 'EDITAR CITA'}">Formulario Cita</h2>
+        </div>
+
+        <div class="card-body">
+            <form th:action="@{/citas/guardar}" th:object="${cita}" method="post">
+                <input type="hidden" name="id" th:value="${cita.id}">
+
+                <div class="form-group">
+                    <label for="usuarioId" class="form-label">Usuario *</label>
+                    <select id="usuarioId" th:field="*{usuarioId}" class="form-control" required>
+                        <option value="">Seleccione un usuario</option>
+                        <option th:each="usuario : ${usuarios}" 
+                                th:value="${usuario.id}" 
+                                th:text="${usuario.nombre}">Usuario</option>
+                    </select>
+                    <span th:if="${#fields.hasErrors('usuarioId')}" th:errors="*{usuarioId}" style="color: var(--color-danger); font-size: 0.9rem;"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="servicioId" class="form-label">Servicio *</label>
+                    <select id="servicioId" th:field="*{servicioId}" class="form-control" required>
+                        <option value="">Seleccione un servicio</option>
+                        <option th:each="servicio : ${servicios}" 
+                                th:value="${servicio.id}" 
+                                th:text="${servicio.nombre + ' - $' + servicio.precio}">Servicio</option>
+                    </select>
+                    <span th:if="${#fields.hasErrors('servicioId')}" th:errors="*{servicioId}" style="color: var(--color-danger); font-size: 0.9rem;"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="profesionalId" class="form-label">Profesional *</label>
+                    <select id="profesionalId" th:field="*{profesionalId}" class="form-control" required>
+                        <option value="">Seleccione un profesional</option>
+                        <option th:each="profesional : ${profesionales}" 
+                                th:value="${profesional.id}" 
+                                th:text="${profesional.usuarioNombre + ' - ' + profesional.especialidad}">Profesional</option>
+                    </select>
+                    <span th:if="${#fields.hasErrors('profesionalId')}" th:errors="*{profesionalId}" style="color: var(--color-danger); font-size: 0.9rem;"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="fechaHora" class="form-label">Fecha y Hora *</label>
+                    <input type="datetime-local" id="fechaHora" th:field="*{fechaHora}" class="form-control" required>
+                    <span th:if="${#fields.hasErrors('fechaHora')}" th:errors="*{fechaHora}" style="color: var(--color-danger); font-size: 0.9rem;"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="estado" class="form-label">Estado *</label>
+                    <select id="estado" th:field="*{estado}" class="form-control" required>
+                        <option value="PENDIENTE">Pendiente</option>
+                        <option value="CONFIRMADA">Confirmada</option>
+                        <option value="COMPLETADA">Completada</option>
+                        <option value="CANCELADA">Cancelada</option>
+                    </select>
+                    <span th:if="${#fields.hasErrors('estado')}" th:errors="*{estado}" style="color: var(--color-danger); font-size: 0.9rem;"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="notas" class="form-label">Notas</label>
+                    <textarea id="notas" th:field="*{notas}" class="form-control" rows="4" placeholder="Notas adicionales"></textarea>
+                    <span th:if="${#fields.hasErrors('notas')}" th:errors="*{notas}" style="color: var(--color-danger); font-size: 0.9rem;"></span>
+                </div>
+
+                <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">Guardar</button>
+                    <a th:href="@{/citas}" class="btn btn-secondary" style="flex: 1;">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+
+</body>
+</html>
