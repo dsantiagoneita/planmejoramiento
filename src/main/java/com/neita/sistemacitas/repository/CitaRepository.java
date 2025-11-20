@@ -1,4 +1,4 @@
-package com.neita.sistemacitas.repository;
+ package com.neita.sistemacitas.repository;
 
 import com.neita.sistemacitas.entity.Cita;
 import org.springframework.data.jpa.repository.JpaRepository;

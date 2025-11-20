@@ -16,8 +16,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 /**
- * Configuración de seguridad de la aplicación.
- * Define las reglas de autenticación, autorización y encriptación de contraseñas.
+ * Configuración de seguridad de la aplicación. Define las reglas de
+ * autenticación, autorización y encriptación de contraseñas.
  */
 @Configuration
 @EnableWebSecurity
@@ -25,80 +25,72 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final CustomUserDetailsService userDetailsService;
+	private final CustomUserDetailsService userDetailsService;
 
-    /**
-     * Configura el encoder de contraseñas usando BCrypt.
-     */
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+	/**
+	 * Configura el encoder de contraseñas usando BCrypt.
+	 */
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
 
-    /**
-     * Configura el proveedor de autenticación.
-     */
-    @Bean
-    public DaoAuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService);
-        authProvider.setPasswordEncoder(passwordEncoder());
-        return authProvider;
-    }
+	/**
+	 * Configura el proveedor de autenticación.
+	 */
+	@Bean
+	public DaoAuthenticationProvider authenticationProvider() {
+		DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+		authProvider.setUserDetailsService(userDetailsService);
+		authProvider.setPasswordEncoder(passwordEncoder());
+		return authProvider;
+	}
 
-    /**
-     * Configura el administrador de autenticación.
-     */
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
-        return authConfig.getAuthenticationManager();
-    }
+	/**
+	 * Configura el administrador de autenticación.
+	 */
+	@Bean
+	public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+		return authConfig.getAuthenticationManager();
+	}
 
-    /**
-     * Configura la cadena de filtros de seguridad.
-     * Define qué recursos son públicos y cuáles requieren autenticación.
-     */
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-            .authenticationProvider(authenticationProvider())
-            .authorizeHttpRequests(authorize -> authorize
-                // Recursos públicos
-                .requestMatchers(
-                    "/css/**",
-                    "/js/**",
-                    "/images/**",
-                    "/login",
-                    "/register",
-                    "/api/public/**"
-                ).permitAll()
-                // Todos los demás recursos requieren autenticación
-                .anyRequest().authenticated()
-            )
-            .formLogin(form -> form
-                .loginPage("/login")
-                .loginProcessingUrl("/login")
-                .defaultSuccessUrl("/", true)
-                .failureUrl("/login?error=true")
-                .usernameParameter("email")
-                .passwordParameter("password")
-                .permitAll()
-            )
-            .logout(logout -> logout
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutSuccessUrl("/login?logout=true")
-                .invalidateHttpSession(true)
-                .deleteCookies("JSESSIONID")
-                .permitAll()
-            )
-            .exceptionHandling(exception -> exception
-                .accessDeniedPage("/access-denied")
-            )
-            .sessionManagement(session -> session
-                .maximumSessions(1)
-                .expiredUrl("/login?expired=true")
-            );
+	/**
+	 * Configura la cadena de filtros de seguridad para endpoints REST. Usa HTTP
+	 * Basic Authentication para los endpoints /api/**
+	 */
+	@Bean
+	public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
+		http.securityMatcher("/api/**").authenticationProvider(authenticationProvider()).authorizeHttpRequests(
+				authorize -> authorize.requestMatchers("/api/public/**").permitAll().anyRequest().authenticated())
+				.httpBasic(httpBasic -> {
+				})
+				.sessionManagement(session -> session.sessionCreationPolicy(
+						org.springframework.security.config.http.SessionCreationPolicy.STATELESS))
+				.csrf(csrf -> csrf.disable());
 
-        return http.build();
-    }
+		return http.build();
+	}
+
+	/**
+	 * Configura la cadena de filtros de seguridad para páginas web. Usa
+	 * autenticación por formulario para las páginas HTML.
+	 */
+	@Bean
+	public SecurityFilterChain webFilterChain(HttpSecurity http) throws Exception {
+		http.authenticationProvider(authenticationProvider()).authorizeHttpRequests(authorize -> authorize
+				// Recursos públicos
+				.requestMatchers("/css/**", "/js/**", "/images/**", "/login", "/register", "/api/public/**").permitAll()
+				// Todos los demás recursos requieren autenticación
+				.anyRequest().authenticated())
+				.formLogin(form -> form.loginPage("/login").loginProcessingUrl("/login").defaultSuccessUrl("/", true)
+						.failureUrl("/login?error=true").usernameParameter("email").passwordParameter("password")
+						.permitAll())
+				.logout(logout -> logout.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+						.logoutSuccessUrl("/login?logout=true").invalidateHttpSession(true).deleteCookies("JSESSIONID")
+						.permitAll())
+				.exceptionHandling(exception -> exception.accessDeniedPage("/access-denied"))
+				.sessionManagement(session -> session.maximumSessions(1).expiredUrl("/login?expired=true"));
+
+		return http.build();
+	}
 }
